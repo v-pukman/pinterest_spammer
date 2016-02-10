@@ -56,5 +56,12 @@ describe PinterestSpammer do
       expect(result[:success]).to eq true
       expect(result[:board_ids][0]).to eq 1234
     end
+
+    it 'return error message on fail' do
+      allow(agent).to receive(:default_headers) { raise StandardError }
+      result = agent.get_boards
+      expect(result[:success]).to eq false
+      expect(result[:error_msg]).to_not eq nil
+    end
   end
 end
