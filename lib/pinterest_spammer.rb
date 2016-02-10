@@ -64,6 +64,8 @@ class PinterestSpammer
       pin_id = result_body['resource_response']['data']['id']
     end
     { success:  success, pin_id: pin_id }
+  rescue StandardError => e
+    { success: false, error_msg: e.message }
   end
 
   private
