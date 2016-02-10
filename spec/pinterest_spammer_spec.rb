@@ -48,4 +48,12 @@ describe PinterestSpammer do
       expect(result[:error_msg]).to_not eq nil
     end
   end
+
+  describe '#get_boards' do
+    it 'returns board ids list' do
+      result = agent.get_boards
+      expect(result.is_a?(Array)).to eq true
+      expect(result[0]).to eq '1234'
+    end
+  end
 end
