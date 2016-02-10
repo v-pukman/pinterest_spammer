@@ -3,6 +3,10 @@ require 'json'
 class PinterestSpammer
   attr_accessor :agent, :csrftoken
 
+  def initialize
+    @agent = Mechanize.new
+  end
+
   def sign_in(username, password)
     # 1. complete request params
     url = 'https://www.pinterest.com/resource/UserSessionResource/create/'
@@ -20,8 +24,12 @@ class PinterestSpammer
     headers['X-CSRFToken'] = '1234'
 
     # 2. make request
-    agent = Mechanize.new
-    result = agent.post(url, params, headers)
+    result = @agent.post(url, params, headers)
+    @agent.cookies.each do |c|
+      if c.name == 'csrftoken'
+        @csrftoken = c.value.to_s
+      end
+    end
 
     # 3. return result
     { success: result.code.to_s == '200' }
@@ -44,11 +52,10 @@ class PinterestSpammer
       module_path: "module_path=App()>PinBookmarklet()>PinCreate()>PinForm(description=, default_board_id=null, show_cancel_button=true, cancel_text=Close, link=, show_uploader=false, image_url=, is_video=null, heading=Pick a board, pin_it_script_button=true)"
     }
     headers = default_headers
-    headers['X-CSRFToken'] = '1234'
+    headers['X-CSRFToken'] = @csrftoken
 
     # 2. make request
-    agent = Mechanize.new
-    result = agent.post(url, params, headers)
+    result = @agent.post(url, params, headers)
 
     # 3. return result
     success = result.code.to_s == '200'

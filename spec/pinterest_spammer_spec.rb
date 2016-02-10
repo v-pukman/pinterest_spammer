@@ -17,6 +17,16 @@ describe PinterestSpammer do
       expect(result[:success]).to eq false
       expect(result[:error_msg]).to_not eq nil
     end
+
+    it 'grabs csrftoken' do
+      cookie = double()
+      allow(cookie).to receive(:name).and_return('csrftoken')
+      allow(cookie).to receive(:value).and_return('1234')
+      allow(agent.agent).to receive(:cookies).and_return([cookie])
+      stub_request(:post, 'https://www.pinterest.com/resource/UserSessionResource/create/').to_return(:status => 200, :body => "", :headers => {})
+      result = agent.sign_in 'username_test', 'password_test'
+      expect(agent.csrftoken).to eq '1234'
+    end
   end
 
   it 'creates a pin' do
