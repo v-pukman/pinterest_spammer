@@ -68,6 +68,32 @@ class PinterestSpammer
     { success: false, error_msg: e.message }
   end
 
+  def get_boards
+    # 1. complete request params
+    url = 'https://www.pinterest.com/resource/BoardPickerBoardsResource/get/'
+    data = {
+      options: { filter: 'all', field_set_key: 'board_picker'},
+      context: {}
+    }
+    params = {
+      data: data.to_json
+    }
+    headers = default_headers
+    headers['X-CSRFToken'] = @csrftoken
+
+    # 2. make request
+    result = @agent.post(url, params, headers)
+
+    # 3. return result
+    success = result.code.to_s == '200'
+    if success
+      body = JSON.parse(result.body)
+      boards = body['resource_response']['data']['all_boards'].map {|b| b['id'].to_s }
+    end
+
+    boards
+  end
+
   private
 
   def default_headers

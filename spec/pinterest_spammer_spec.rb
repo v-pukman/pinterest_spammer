@@ -51,6 +51,7 @@ describe PinterestSpammer do
 
   describe '#get_boards' do
     it 'returns board ids list' do
+      stub_request(:post, 'https://www.pinterest.com/resource/BoardPickerBoardsResource/get/').to_return(status: 200, body: { resource_response: { data: { all_boards: [{id: 1234}] }}}.to_json, headers: {})
       result = agent.get_boards
       expect(result.is_a?(Array)).to eq true
       expect(result[0]).to eq '1234'
