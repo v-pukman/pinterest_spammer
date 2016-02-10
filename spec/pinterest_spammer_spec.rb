@@ -19,5 +19,12 @@ describe PinterestSpammer do
     end
   end
 
-  it 'creates a pin'
+  it 'creates a pin' do
+    link = 'https://xyz.xyz/'
+    image_url = 'http://rubyonrails.org/images/rails.png'
+    description = 'Spammer!'
+    result = agent.create_pin(link, image_url, description)
+    expect(result[:success]).to eq true
+    expect(result[:pin_id]).to_not eq nil
+  end
 end
