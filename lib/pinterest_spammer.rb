@@ -20,10 +20,9 @@ class PinterestSpammer
     # 2. make request
     agent = Mechanize.new
     result = agent.post(url, params, headers)
-    status = result.code.to_s == '200' ? 'success' : 'fail'
 
     # 3. return result
-    JSON.parse({status: status}.to_json)
+    { success: result.code.to_s == '200' }
   end
 
   private
