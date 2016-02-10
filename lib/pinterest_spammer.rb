@@ -92,6 +92,8 @@ class PinterestSpammer
     end
 
     { success: success, board_ids: board_ids }
+  rescue StandardError => e
+    { success: false, error_msg: e.message }
   end
 
   private
