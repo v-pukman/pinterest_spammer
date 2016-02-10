@@ -88,10 +88,10 @@ class PinterestSpammer
     success = result.code.to_s == '200'
     if success
       body = JSON.parse(result.body)
-      boards = body['resource_response']['data']['all_boards'].map {|b| b['id'].to_s }
+      board_ids = body['resource_response']['data']['all_boards'].map {|b| b['id'] }
     end
 
-    boards
+    { success: success, board_ids: board_ids }
   end
 
   private
