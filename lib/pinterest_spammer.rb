@@ -23,6 +23,8 @@ class PinterestSpammer
 
     # 3. return result
     { success: result.code.to_s == '200' }
+  rescue StandardError => e
+    { success: false, error_msg: e.message }
   end
 
   private

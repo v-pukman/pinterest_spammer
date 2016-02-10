@@ -12,7 +12,7 @@ describe PinterestSpammer do
     end
 
     it 'returns error message on fail' do
-      allow(agent).to receive(:sign_in) { raise StandardError }
+      allow(agent).to receive(:default_headers) { raise StandardError }
       result = agent.sign_in 'username_test', 'password_test'
       expect(result[:success]).to eq false
       expect(result[:error_msg]).to_not eq nil
