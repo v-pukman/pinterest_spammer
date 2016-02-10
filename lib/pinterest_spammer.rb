@@ -1,6 +1,8 @@
 require 'mechanize'
 require 'json'
 class PinterestSpammer
+  attr_accessor :agent, :csrftoken
+
   def sign_in(username, password)
     # 1. complete request params
     url = 'https://www.pinterest.com/resource/UserSessionResource/create/'
@@ -25,6 +27,36 @@ class PinterestSpammer
     { success: result.code.to_s == '200' }
   rescue StandardError => e
     { success: false, error_msg: e.message }
+  end
+
+  def create_pin(board_id, link, image_url, description)
+    # 1. complete request params
+    url = 'https://www.pinterest.com/resource/PinResource/create/'
+    data = {
+      options: { board_id: board_id , description: description, link: link, image_url: image_url, method: "bookmarklet", is_video: nil },
+      context: {}
+    }
+    params = {
+      source_url: "/pin/create/bookmarklet/?url=#{link}",
+      pinFave: 1,
+      description: description,
+      data: data.to_json,
+      module_path: "module_path=App()>PinBookmarklet()>PinCreate()>PinForm(description=, default_board_id=null, show_cancel_button=true, cancel_text=Close, link=, show_uploader=false, image_url=, is_video=null, heading=Pick a board, pin_it_script_button=true)"
+    }
+    headers = default_headers
+    headers['X-CSRFToken'] = '1234'
+
+    # 2. make request
+    agent = Mechanize.new
+    result = agent.post(url, params, headers)
+
+    # 3. return result
+    success = result.code.to_s == '200'
+    if success
+      result_body = JSON.parse(result.body)
+      pin_id = result_body['resource_response']['data']['id']
+    end
+    { success:  success, pin_id: pin_id }
   end
 
   private

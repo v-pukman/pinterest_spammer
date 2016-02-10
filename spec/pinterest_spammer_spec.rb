@@ -20,10 +20,12 @@ describe PinterestSpammer do
   end
 
   it 'creates a pin' do
+    stub_request(:post, 'https://www.pinterest.com/resource/PinResource/create/').to_return(:status => 200, :body => { resource_response: { data: { id: 1 }}}.to_json, :headers => {})
+    board_id = 1234
     link = 'https://xyz.xyz/'
     image_url = 'http://rubyonrails.org/images/rails.png'
     description = 'Spammer!'
-    result = agent.create_pin(link, image_url, description)
+    result = agent.create_pin(board_id, link, image_url, description)
     expect(result[:success]).to eq true
     expect(result[:pin_id]).to_not eq nil
   end
